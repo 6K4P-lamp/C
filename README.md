@@ -6,7 +6,7 @@
 #include <string.h>
 
 void main(void) {
-  char str[100];
+  char str[1000];
   printf("문장 입력: ");
   scanf("%[^\n]", str); // 엔터(\n) 전까지 공백 포함 문장 전체 입력
 
@@ -21,13 +21,16 @@ void main(void) {
 ```c
 #include <stdio.h>
 int add(int a, int b) {
-  return a + b;
+  static int c;
+  c = a + b;
+  return &c;
 }
 void main() {
   int a = 11, b = 22;
-
-  int (*sum)(int, int) = add;
-  printf("%d\n", sum(a, b));
+  int *c;
+  int* (*sum)(int, int) = add;
+  c = sum(a, b);
+  printf("%d\n", *c);
 }
 ```
 
@@ -35,10 +38,10 @@ void main() {
 ```c
 #include <stdio.h>
 void main() {
-  int a[3][4] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
+  int a[4][4] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 };
 
   int i, j, s = 0;
-  for (i = 0; i < 3; i++)
+  for (i = 0; i < 4; i++)
     for (j = 0; j < 4; j++)
       s += a[i][j];
 
@@ -54,9 +57,9 @@ struct S {
   int k, e, m;
 };
 void main() {
-  struct S a[2] = { {80, 90, 85}, {70, 75, 95} };
+  struct S a[3] = { {80, 90, 85}, {70, 75, 95}, {70, 75, 95} };
   FILE *p = fopen("my.bin", "wb");
-  fwrite(a, sizeof(struct S), 2, p);
+  fwrite(a, sizeof(struct S), 3, p);
   fclose(p);
 }
 ```
@@ -69,12 +72,12 @@ struct S {
   int k, e, m;
 };
 void main() {
-  struct S a[2];
+  struct S a[3];
   FILE *p = fopen("my.bin", "rb");
-  fread(a, sizeof(struct S), 2, p);
+  fread(a, sizeof(struct S), 3, p);
   fclose(p);
-  printf("개인1: %.2f, 개인2: %.2f\n", (a[0].k + a[0].e + a[0].m) / 3.0, (a[1].k + a[1].e + a[1].m) / 3.0);
-  printf("과목1: %.2f, 과목2: %.2f, 과목3: %.2f\n", (a[0].k + a[1].k) / 2.0, (a[0].e + a[1].e) / 2.0, (a[0].m + a[1].m) / 2.0);
+  printf("개인1: %.2f, 개인2: %.2f, 개인3: %.2f\n", (a[0].k + a[0].e + a[0].m) / 3.0, (a[1].k + a[1].e + a[1].m) / 3.0, (a[2].k + a[2].e + a[2].m) / 3.0);
+  printf("과목1: %.2f, 과목2: %.2f, 과목3: %.2f\n", (a[0].k + a[1].k + a[2].k) / 3.0, (a[0].e + a[1].e + a[2].e) / 3.0, (a[0].m + a[1].m + a[2].m) / 3.0);
 }
 ```
 
@@ -83,15 +86,15 @@ void main() {
 #include <stdio.h>
 
 void main() {
-  int a[] = { 2, 4, 1, 5, 3 }, i, j, t;
-  for (i = 0; i < 4; i++)
-    for (j = 0; j < 4 - i; j++)
+  int a[] = { 2, 4, 1, 5, 3, 6, 5 }, i, j, t;
+  for (i = 0; i < 6; i++)
+    for (j = 0; j < 6 - i; j++)
       if (a[j] > a[j + 1]) {
         t = a[j];
         a[j] = a[j + 1];
         a[j + 1] = t;
       }
-  for (i = 0; i < 5; i++)
+  for (i = 0; i < 7; i++)
     printf("%d ", a[i]);
 }
 ```
@@ -145,7 +148,7 @@ int main(void)
 }
 ```
 ## 10. 동적 메모리 할당(malloc)을 활용하여 정수 3개 공간을 할당받은 뒤, {11, 33, 55}를 저장하고 이들의 합을 출력(해제 포함)하는 C언어 코드를 작성하시오.
-```
+```c
 #include <stdio.h>
 #include <stdlib.h>
 
